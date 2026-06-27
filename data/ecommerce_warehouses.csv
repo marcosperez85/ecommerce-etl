@@ -1,0 +1,7 @@
+warehouse_id,warehouse_name,location,capacity_units,current_occupancy,manager_name
+1,Depósito 1,Buenos Aires,10369,,
+2,Depósito 2,Córdoba,,87,Diego Fernández
+3,Depósito 3,Rosario,24554,46,Laura Torres
+4,Depósito 4,Mendoza,13727,60,Laura Torres
+5,  Depósito 5  ,La Plata,84104,,Diego Fernández
+2,Depósito 2,Córdoba,,87,Diego Fernández

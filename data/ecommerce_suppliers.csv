@@ -1,0 +1,10 @@
+supplier_id,supplier_name,contact_name,email,phone,address,rating,is_active
+1,Distribuidora Norte,Carlos López,contact@distribuidoranorte.com,+1 739-937-5352,1438 Tucumán,3.6,true
+2,Importadora Sur,Juan Pérez,contact@importadorasur.com,+1 469-477-4961,2967 córdoba,,
+3,Mayorista Central,Ana Martínez,contact@mayoristacentral.com,+1 719-832-1298,,3.1,
+4,Logística Express,Juan Pérez,  contact@logísticaexpress.com  ,+1 929-244-2434,6981 Mendoza,4,true
+5,Proveedores Unidos,Carlos López,contact@proveedoresunidos.com,+1 827-164-4902,5519 La Plata,4.9,true
+6,Global Supply,María García,,+1 238-923-9761,2173 La Plata,5,true
+7,,Carlos López,contact@fastimport.com,+1 539-731-9641,7028 Mar del Plata,4.8,true
+8,qualitysource,Ana Martínez,contact@qualitysource.com,+1 319-213-4369,6563 La Plata,3.4,true
+7,,Carlos López,contact@fastimport.com,+1 539-731-9641,7028 Mar del Plata,4.8,true
