@@ -20,6 +20,9 @@ columnas_de_fechas = ["birth_date", "registration_date", "last_login", "last_res
 
 # ============================================================================================================
 def mostrar_datos(df):
+    # Mostrar info de cada archivo dentro del array
+    # No uso range(0,10) en zip() para no hardcodear la cantidad de archivos
+    
     print(f"*** Informacion de {os.path.basename(file)} ***\n")
     print(f"Cantidad de filas: {len(df)}, cantidad de columnas: {len(df.columns)}\n")
     # print(df.head())
@@ -47,6 +50,8 @@ def eliminar_nulos(df):
     # print(f"Recuento de valores nulos por cada columna (DESPUES DE LIMPIAR):\n")
     # print(df.isnull().sum())
 
+    return df
+
 # ============================================================================================================
 def eliminar_repetidos(df):
     print(f"Recuendo de valores repetidos por columna ANTES: {df.duplicated().sum()}\n")
@@ -62,6 +67,8 @@ def eliminar_repetidos(df):
         df = df.drop_duplicates()
 
     print(f"Recuendo de valores repetidos por columna DESPUES: {df.duplicated().sum()}\n")
+
+    return df
 
 # ============================================================================================================
 def corregir_data_type(df):
@@ -87,20 +94,33 @@ def corregir_data_type(df):
             df[columna] = df[columna].fillna(0).astype(bool)
 
     # Verificacion
-    df.info()
-    print(df.head())    
-    
+    # df.info()
+    # print(df.head())
+
+    return df
+
 # ============================================================================================================
-# Mostrar info de cada archivo dentro del array
-# No uso range(0,10) en zip() para no hardcodear la cantidad de archivos
 
 # Metodo 1: bucle FOR porque perfmite más control en un ETL real
 # Método 2: list comprehension para mayor brevedad (pero la lógica no escala en un ETL grande)
 # data = [pd.read_csv(file) for file in csv_files]
 
+# Creo diccionario para almacenar cada dataset procesado y diferenciado por nombre.
+datasets = {}
+
 for file in csv_files:
     df = pd.read_csv(file)
+
+    # Obtener nombre de cada dataset para poder referenciarlos luego 
+    nombre_dataset = os.path.splitext(os.path.basename(file))[0]
+
+    # Otra forma de extraer tanto el nombre como la extensión es
+    # nombre, extension = os.path.splitext(os.path.basename(file))
+    # De esta forma se obtiene una tupla y se puede llamar por el campo, no por un indice
+
     mostrar_datos(df)
-    eliminar_nulos(df)
-    eliminar_repetidos(df)
-    corregir_data_type(df)
+    df= eliminar_nulos(df)
+    df = eliminar_repetidos(df)
+    df = corregir_data_type(df)
+    print(nombre_dataset)
+    datasets[nombre_dataset] = df
