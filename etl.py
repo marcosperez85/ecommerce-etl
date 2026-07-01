@@ -206,3 +206,23 @@ df_top_five_customers.to_parquet(".\\output\\top_five_customers.parquet", index=
 df_producto_mas_vendido.to_parquet(".\\output\\producto_mas_vendido.parquet", index=False)
 df_ventas_mes.to_parquet(".\\output\\ventas_mes.parquet", index=False)
 
+# ============================================================================================================
+# Paso 9) Comparar tamaños entre CSV y Parquet
+
+cantidad_bytes_csv_01 = os.path.getsize('.\\output\\top_five_customers.csv')
+cantidad_bytes_csv_02 = os.path.getsize('.\\output\\producto_mas_vendido.csv')
+cantidad_bytes_csv_03 = os.path.getsize('.\\output\\ventas_mes.csv')
+
+print(f"\n")
+print(f"Cantidad de bytes del archivo 'top_five_customers.csv': {cantidad_bytes_csv_01}")
+print(f"Cantidad de bytes del archivo 'producto_mas_vendido.csv': {cantidad_bytes_csv_02}")
+print(f"Cantidad de bytes del archivo 'ventas_mes.csv': {cantidad_bytes_csv_03}")
+
+cantidad_bytes_parquet_01 = os.path.getsize('.\\output\\top_five_customers.parquet')
+cantidad_bytes_parquet_02 = os.path.getsize('.\\output\\producto_mas_vendido.parquet')
+cantidad_bytes_parquet_03 = os.path.getsize('.\\output\\ventas_mes.parquet')
+
+print(f"\n")
+print(f"Cantidad de bytes del archivo 'top_five_customers.parquet': {cantidad_bytes_parquet_01}")
+print(f"Cantidad de bytes del archivo 'producto_mas_vendido.parquet': {cantidad_bytes_parquet_02}")
+print(f"Cantidad de bytes del archivo 'ventas_mes.parquet': {cantidad_bytes_parquet_03}")
