@@ -24,9 +24,9 @@ def mostrar_datos(df):
     # No uso range(0,10) en zip() para no hardcodear la cantidad de archivos
     
     print(f"*** Informacion de {os.path.basename(file)} ***\n")
-    print(f"Cantidad de filas: {len(df)}, cantidad de columnas: {len(df.columns)}\n")
-    # print(df.head())
-    # df.info()
+    # print(f"Cantidad de filas: {len(df)}, cantidad de columnas: {len(df.columns)}\n")
+    print(df.head())
+    df.info()
 
 # ============================================================================================================
 def eliminar_nulos(df):    
@@ -81,7 +81,7 @@ def corregir_data_type(df):
     for columna in columnas_de_fechas:
         if columna in df.columns:
             df[columna] = df[columna].fillna(0)
-            df[columna] = pd.to_datetime(df[columna], format = 'mixed').dt.date
+            df[columna] = pd.to_datetime(df[columna], format = 'mixed')
     
     # Convertir a integer, los años declados como float64
     for columna in columnas_de_integer:
@@ -122,5 +122,70 @@ for file in csv_files:
     df= eliminar_nulos(df)
     df = eliminar_repetidos(df)
     df = corregir_data_type(df)
-    print(nombre_dataset)
     datasets[nombre_dataset] = df
+    # print(nombre_dataset)
+
+# Los nombres que se imprimen en la terminal son los nombres de los archivos, es decir:
+# ecommerce_brands, ecommerce_categories, ecommerce_customers, ecommerce_inventory, ecommerce_orders,
+# ecommerce_order_items, ecommerce_products, ecommerce_promotions, ecommerce_reviews, ecommerce_suppliers,
+# ecommerce_warehouses
+
+# ============================================================================================================
+# Paso 7) RESPONDER PREGUNTAS DE NEGOCIO
+
+# Punto 1) ¿Cuáles son los 5 clientes que más gastaron?
+
+# Luego de revisar los DF con print(df.head()) vemos que:
+# a) El campo "customer_id" aparece en "ecommerce_customers" y en "ecommerce_orders" 
+# b) podemos unir (merge) ambos para poder consultar nombre de cliente y monto total gastado
+
+df_customer_orders = pd.merge(datasets["ecommerce_customers"], datasets["ecommerce_orders"], on="customer_id", how="left")
+
+# Metodo 1: mantiene la tabla original y agrega una nueva
+# df_customer_orders["total_gastado"] = df_customer_orders.groupby(["first_name", "last_name"])["total_amount"].transform('sum')
+
+# Metodo 2: construye una tabla nueva con las columnas del groupy() y agrega una nueva luego del agg())
+df_customer_orders = df_customer_orders.groupby(["customer_id"], as_index=False).agg(
+    total_gastado = ("total_amount", 'sum'),
+    cantidad_ordenes = ("order_id", 'count')
+)
+
+df_customer_orders = df_customer_orders.sort_values('total_gastado', ascending=False)
+print(f"*** Los 5 clientes que más gastaron fueron: ***")
+print(f"{df_customer_orders.head()}\n")
+
+# ============================================================================================================
+# Punto 2) ¿Cuál es el producto más vendido (por cantidad)?
+
+# a) El campo "product_id" aparece en "ecommerce_products" y en "ecommerce_order_items" 
+# b) En ese último también aparece "quantity" así que podemos unirlos (merge) para sumar las cantidades en base al "product_id"
+
+df_products_order_items = pd.merge(datasets["ecommerce_products"], datasets["ecommerce_order_items"], on="product_id", how="left")
+
+# Agrupamos por "product_id" y "productname" para luego sumar el campo "quantity"
+df_products_order_items = df_products_order_items.groupby(["product_id", "product_name"], as_index=False).agg(
+    cantidad_de_ventas = ("quantity", sum)
+)
+df_products_order_items = df_products_order_items.sort_values('cantidad_de_ventas', ascending=False)
+
+print(f"*** El producto más vendido fue: ***")
+print(f"{df_products_order_items.head(1)}\n")
+
+# ============================================================================================================
+# Punto 3) ¿Cómo evolucionaron las ventas mes a mes?
+
+# a) El campo "order_date" y "total_amount" aparecen ambos en "ecomerce_orders"
+# b) Me quedo con el campo "mes" obtenido de "order_date"
+
+# Creo una copia en un DF separado
+df_orders = datasets["ecommerce_orders"]
+
+# Convierto la fecha del campo "order_date" para que sólo me deje el mes en un campo nuevo
+df_orders["mes"] = datasets["ecommerce_orders"]["order_date"].dt.to_period("M")
+ventas_mes = df_orders.groupby("mes")['total_amount'].sum().reset_index()
+
+# Creo un dataframe que sólo contenga las columnas de "mes" y "total_ventas"
+ventas_mes.columns = ['mes', 'total_ventas']
+
+print(f"*** La evolución de ventas mes a mes fue: ***")
+print(ventas_mes)
