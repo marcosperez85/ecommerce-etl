@@ -3,7 +3,7 @@ import os
 import glob
 
 # Usamos glob para obtener todos los archivos CSV en una carpeta
-directory = r"\Marcos\Programacion\ecommerce-etl-python\data"
+directory = r".\\data"
 file_list = os.listdir(directory)
 csv_files = glob.glob(os.path.join(directory, '*.csv'))
 
