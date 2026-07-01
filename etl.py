@@ -193,6 +193,9 @@ print(df_ventas_mes)
 # ============================================================================================================
 # Paso 8) Escribir resultados a CSV y a Parquet
 
+# Crear carpeta de output si no existe
+os.makedirs('output', exist_ok=True)
+
 # Escribir a CSV
 df_top_five_customers.to_csv(".\\output\\top_five_customers.csv", index=False)
 df_producto_mas_vendido.to_csv(".\\output\\producto_mas_vendido.csv", index=False)
