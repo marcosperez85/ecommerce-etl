@@ -25,8 +25,8 @@ def mostrar_datos(df):
     
     print(f"*** Informacion de {os.path.basename(file)} ***\n")
     # print(f"Cantidad de filas: {len(df)}, cantidad de columnas: {len(df.columns)}\n")
-    print(df.head())
-    df.info()
+    # print(df.head())
+    # df.info()
 
 # ============================================================================================================
 def eliminar_nulos(df):    
@@ -133,7 +133,7 @@ for file in csv_files:
 # ============================================================================================================
 # Paso 7) RESPONDER PREGUNTAS DE NEGOCIO
 
-# Punto 1) ¿Cuáles son los 5 clientes que más gastaron?
+# Pregunta 1) ¿Cuáles son los 5 clientes que más gastaron?
 
 # Luego de revisar los DF con print(df.head()) vemos que:
 # a) El campo "customer_id" aparece en "ecommerce_customers" y en "ecommerce_orders" 
@@ -151,11 +151,12 @@ df_customer_orders = df_customer_orders.groupby(["customer_id"], as_index=False)
 )
 
 df_customer_orders = df_customer_orders.sort_values('total_gastado', ascending=False)
+df_top_five_customers = df_customer_orders.head()
 print(f"*** Los 5 clientes que más gastaron fueron: ***")
-print(f"{df_customer_orders.head()}\n")
+print(f"{df_top_five_customers}\n")
 
 # ============================================================================================================
-# Punto 2) ¿Cuál es el producto más vendido (por cantidad)?
+# Pregunta 2) ¿Cuál es el producto más vendido (por cantidad)?
 
 # a) El campo "product_id" aparece en "ecommerce_products" y en "ecommerce_order_items" 
 # b) En ese último también aparece "quantity" así que podemos unirlos (merge) para sumar las cantidades en base al "product_id"
@@ -168,24 +169,37 @@ df_products_order_items = df_products_order_items.groupby(["product_id", "produc
 )
 df_products_order_items = df_products_order_items.sort_values('cantidad_de_ventas', ascending=False)
 
+df_producto_mas_vendido = df_products_order_items.head(1)
+
 print(f"*** El producto más vendido fue: ***")
-print(f"{df_products_order_items.head(1)}\n")
+print(f"{df_producto_mas_vendido}\n")
 
 # ============================================================================================================
-# Punto 3) ¿Cómo evolucionaron las ventas mes a mes?
+# Pregunta 3) ¿Cómo evolucionaron las ventas mes a mes?
 
 # a) El campo "order_date" y "total_amount" aparecen ambos en "ecomerce_orders"
 # b) Me quedo con el campo "mes" obtenido de "order_date"
 
-# Creo una copia en un DF separado
-df_orders = datasets["ecommerce_orders"]
+# Creo una copia en un DF separado. Si no agrego pd.DataFrame, el resultado no es un dataframe
+df_orders = pd.DataFrame(datasets["ecommerce_orders"])
 
 # Convierto la fecha del campo "order_date" para que sólo me deje el mes en un campo nuevo
 df_orders["mes"] = datasets["ecommerce_orders"]["order_date"].dt.to_period("M")
-ventas_mes = df_orders.groupby("mes")['total_amount'].sum().reset_index()
-
-# Creo un dataframe que sólo contenga las columnas de "mes" y "total_ventas"
-ventas_mes.columns = ['mes', 'total_ventas']
+df_ventas_mes = df_orders.groupby("mes")['total_amount'].sum().reset_index()
 
 print(f"*** La evolución de ventas mes a mes fue: ***")
-print(ventas_mes)
+print(df_ventas_mes)
+
+# ============================================================================================================
+# Paso 8) Escribir resultados a CSV y a Parquet
+
+# Escribir a CSV
+df_top_five_customers.to_csv(".\\output\\top_five_customers.csv", index=False)
+df_producto_mas_vendido.to_csv(".\\output\\producto_mas_vendido.csv", index=False)
+df_ventas_mes.to_csv(".\\output\\ventas_mes.csv", index=False)
+
+# Escribir a Parquet
+df_top_five_customers.to_parquet(".\\output\\top_five_customers.parquet", index=False)
+df_producto_mas_vendido.to_parquet(".\\output\\producto_mas_vendido.parquet", index=False)
+df_ventas_mes.to_parquet(".\\output\\ventas_mes.parquet", index=False)
+
