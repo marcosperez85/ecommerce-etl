@@ -131,7 +131,7 @@ El script generará:
 | Problema | Solución |
 |----------|----------|
 | "No se encontraron archivos" | Verifica que los CSV están en la ruta especificada |
-| `ModuleNotFoundError: pandas` | Ejecuta: `pip install pandas` |
+| `ModuleNotFoundError: pandas` | Ejecuta: `pip install -r requirements.txt` |
 | Error de permisos en `output/` | Asegúrate de tener permisos de escritura en la carpeta |
 
 ---
